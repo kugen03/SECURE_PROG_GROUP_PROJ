@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %} — Courses{% endblock %}
+{% block content %}
+<h1>Available courses</h1>
+<p class="muted">Welcome back, {{ user }}. Your balance: <strong>${{ "%.2f"|format(credits) }}</strong>
+  | <a href="{{ url_for('transactions') }}">View transactions</a>
+</p>
+
+<div class="grid">
+  {% for c in courses %}
+  <a class="course {{ 'locked' if c['premium'] and c['id'] not in enrolled_ids else '' }}"
+     href="{{ url_for('course', course_id=c['id']) }}">
+    <div class="course-head">
+      <span class="cid">#{{ c['id'] }}</span>
+      {% if c['premium'] %}
+        {% if c['id'] in enrolled_ids %}
+          <span class="badge enrolled-badge">✓ Enrolled</span>
+        {% else %}
+          <span class="badge">🔒 ${{ "%.2f"|format(c['price']) }}</span>
+        {% endif %}
+      {% else %}
+        <span class="badge free">Free</span>
+      {% endif %}
+    </div>
+    <h2>{{ c['title'] }}</h2>
+    <p class="muted">{{ c['summary'] }}</p>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}

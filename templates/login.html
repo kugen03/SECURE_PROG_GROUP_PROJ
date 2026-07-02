@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %} — Sign in{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h1>Sign in</h1>
+  <p class="muted">Enter your LearnHub credentials to continue.</p>
+
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+
+  <form method="post" action="{{ url_for('login') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Username
+      <input type="text" name="username" autocomplete="off" autofocus maxlength="80" required>
+    </label>
+    <label>Password
+      <input type="password" name="password" autocomplete="off" maxlength="128" required>
+    </label>
+    <button type="submit">Log in</button>
+  </form>
+
+  <p class="muted" style="margin-top:16px;font-size:.8rem;">
+    🔒 Rate limited: 5 attempts per minute.
+  </p>
+</div>
+{% endblock %}

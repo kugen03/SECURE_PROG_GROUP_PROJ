@@ -1,0 +1,9 @@
+services:
+  learnhub:
+    build: .
+    container_name: learnhub
+    # Bind to localhost only — this app is intentionally vulnerable.
+    # Drop the "127.0.0.1:" prefix only if you fully understand the risk.
+    ports:
+      - "127.0.0.1:5000:5000"
+    restart: unless-stopped

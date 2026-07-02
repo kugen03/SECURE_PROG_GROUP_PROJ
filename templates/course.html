@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %} — {{ course['title'] }}{% endblock %}
+{% block content %}
+<div class="card">
+  <a class="back" href="{{ url_for('dashboard') }}">← Back to courses</a>
+  <div class="course-head">
+    <span class="cid">Course #{{ course['id'] }}</span>
+    {% if course['premium'] %}
+      {% if enrolled %}
+        <span class="badge enrolled-badge">✓ Enrolled</span>
+      {% else %}
+        <span class="badge">🔒 ${{ "%.2f"|format(course['price']) }}</span>
+      {% endif %}
+    {% else %}
+      <span class="badge free">Free</span>
+    {% endif %}
+  </div>
+  <h1>{{ course['title'] }}</h1>
+  <p class="muted">{{ course['summary'] }}</p>
+  <hr>
+  {% if course['premium'] and not enrolled %}
+  <div class="locked-note">
+    <p>🔒 This is a premium course. Purchase to unlock content and downloads.</p>
+    <form method="post" action="{{ url_for('buy_course', course_id=course['id']) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn">🛒 Buy for ${{ "%.2f"|format(course['price']) }}</button>
+    </form>
+  </div>
+  {% else %}
+  <article class="body">{{ course['body'] }}</article>
+  <a class="btn" href="{{ url_for('download', course_id=course['id']) }}">
+    ⬇ Download course content
+  </a>
+  {% endif %}
+</div>
+{% endblock %}

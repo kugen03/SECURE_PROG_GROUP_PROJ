@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %} — Admin Panel{% endblock %}
+{% block content %}
+<h1>Admin Panel</h1>
+<p class="muted">Manage users, enrollments, and credits. Role: <strong>admin</strong></p>
+
+<div class="card" style="margin-bottom:24px">
+  <h2>Add Credits to User</h2>
+  <form method="post" action="{{ url_for('admin_add_credit') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Username
+      <input type="text" name="username" placeholder="e.g. jordan.reyes" required>
+    </label>
+    <label>Amount ($)
+      <input type="number" name="amount" min="0.01" max="10000" step="0.01"
+             placeholder="e.g. 50.00" required>
+    </label>
+    <button type="submit">Add Credits</button>
+  </form>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+  <h2>Enroll User in Course</h2>
+  <form method="post" action="{{ url_for('admin_enroll') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Username
+      <input type="text" name="username" placeholder="e.g. jordan.reyes" required>
+    </label>
+    <label>Course ID
+      <input type="number" name="course_id" min="1" placeholder="e.g. 3" required>
+    </label>
+    <button type="submit">Enroll User</button>
+  </form>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+  <h2>Users</h2>
+  <table class="data-table">
+    <thead><tr><th>ID</th><th>Username</th><th>Role</th><th>Credits</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u['id'] }}</td>
+        <td>{{ u['username'] }}</td>
+        <td>{{ u['role'] }}</td>
+        <td>${{ "%.2f"|format(u['credits']) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card" style="margin-bottom:24px">
+  <h2>Recent Transactions</h2>
+  <table class="data-table">
+    <thead><tr><th>Date</th><th>User</th><th>Type</th><th>Amount</th><th>Description</th></tr></thead>
+    <tbody>
+      {% for t in recent_transactions %}
+      <tr>
+        <td>{{ t['created_at'][:16] }}</td>
+        <td>{{ t['username'] }}</td>
+        <td>{{ t['type'] }}</td>
+        <td>${{ "%.2f"|format(t['amount']) }}</td>
+        <td>{{ t['description'] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>Enrollments</h2>
+  <table class="data-table">
+    <thead><tr><th>User</th><th>Course</th><th>Date</th></tr></thead>
+    <tbody>
+      {% for e in enrollments %}
+      <tr>
+        <td>{{ e['username'] }}</td>
+        <td>#{{ e['course_id'] }} — {{ e['title'] }}</td>
+        <td>{{ e['enrolled_at'][:16] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
